@@ -49,6 +49,10 @@ func buildFromFile(dictionary string) *goTrie.Trie {
 		trie.Add(scanner.Text())
 	}
 
+	if err := scanner.Err(); err != nil {
+		log.Fatal("Error while reading dictionary: ", err)
+	}
+
 	return trie
 
 }
