@@ -35,6 +35,9 @@ func parse() {
 
 func buildFromFile(dictionary string) *goTrie.Trie {
 	trie := goTrie.New()
+	if trie == nil {
+		log.Fatal("Error while creating Trie object.")
+	}
 
 	file, err := os.Open(dictionary)
 	defer file.Close()
