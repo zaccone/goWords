@@ -40,7 +40,6 @@ func buildFromFile(dictionary string) *goTrie.Trie {
 	}
 
 	file, err := os.Open(dictionary)
-	defer file.Close()
 
 	if err != nil {
 		log.Fatal(err)
@@ -54,6 +53,10 @@ func buildFromFile(dictionary string) *goTrie.Trie {
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal("Error while reading dictionary: ", err)
+	}
+
+	if err := file.Close(); err != nil {
+		log.Printf("Error while closing dictionary file: %s\n", err)
 	}
 
 	return trie
