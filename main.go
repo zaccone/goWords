@@ -14,8 +14,9 @@ var program = os.Args[0]
 
 var dictionary string
 var prefix string
+var countWords bool
 
-func parse() {
+func init() {
 
 	flag.Usage = func() {
 		fmt.Printf("Usage: %s [-flags] prefix\n", program)
@@ -23,6 +24,13 @@ func parse() {
 	}
 	flag.StringVar(&dictionary, "dict", "/usr/share/dict/words",
 		"Path to the file with words, one word per line. Defaults to /usr/share/dict/words")
+
+	// option -c/--count
+	flag.BoolVar(&countWords, "count", false,
+		"Show number of matching words only.")
+	flag.BoolVar(&countWords, "c", false,
+		"Show number of matching words only.")
+
 	flag.Parse()
 
 	prefix = flag.Arg(0)
@@ -63,14 +71,23 @@ func buildFromFile(dictionary string) *goTrie.Trie {
 
 }
 
-func main() {
-	parse()
-	root := buildFromFile(dictionary)
-	matchingWords := root.GetWordsFromPrefix(prefix)
-	fmt.Println(len(matchingWords))
+func countMatchingWords(root *goTrie.Trie, prefix string) {
+	node := root.Get(prefix)
+	fmt.Println(node.Children())
+}
 
+func printMatchingWords(root *goTrie.Trie, prefix string) {
+	matchingWords := root.GetWordsFromPrefix(prefix)
 	for _, word := range matchingWords {
 		fmt.Println(word)
 	}
+}
 
+func main() {
+	root := buildFromFile(dictionary)
+	if countWords {
+		countMatchingWords(root, prefix)
+	} else {
+		printMatchingWords(root, prefix)
+	}
 }
